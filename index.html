@@ -293,6 +293,345 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/03/04/python爬虫的一些小知识点/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Shirley">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/myslef.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="TobeFine">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="TobeFine" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/04/python爬虫的一些小知识点/" itemprop="url">
+                  python爬虫的一些小知识点
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-04T14:32:45+08:00">
+                2017-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/04/python爬虫的一些小知识点/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/04/python爬虫的一些小知识点/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>-</p>
+<blockquote>
+<p><strong>关于cookielib</strong></p>
+</blockquote>
+<p>1&gt;cookie:有一些网站在cookie未启用的时候无法浏览，而cookie是用于某些网站辨别用户身份，进行session跟踪而存储在 用户本地终端 上的数据（比如说有些网站需要登录后才能访问某个页面，在登录之前，你想抓取某个页面内容是不允许的。那么我们可以利用Urllib2库保存我们登录的Cookie，然后再抓取其他页面就达到目的了。）</p>
+<p> 2&gt;打开网页的console，刷新页面之后，在network中会有Request Headers，其中就有cookie</p>
+<p>当我们(客户端）输入URL请求页面后，我们即给web服务端发送了一个要求（request），web server根据Request生产响应的response，发回给我们（客户端），然后解析Response的html，我们就可以看到页面</p>
+<p> –当网站发送页面到客户端时（服务器发送给客户端），会发送Headers来描述HTTP事物，送回来的headers（response headers）中包含一些有cookie的文本。如果此时想要从相同的服务器返回其他页面（客户端请求其他页面），那么cookie就必须作为请求的handler（request handler）传送给服务器，这就意味着cookies会存储一些信息让服务器来识别你。</p>
+<pre><code>#其中一种获取网页的方式#
+cj =cookielib.CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+urllib2.install_opener(opener)
+response3 = urllib2.urlopen(url)
+print response3.getcode()
+print cj
+print response3.read()
+</code></pre><blockquote>
+<p><strong>关于CookieJar()</strong></p>
+</blockquote>
+<p>cookielib.CookieJar用于存储cookie对象，此模块捕获cookie并在后续连接请教时重新发送，还可以用来处理包含cookie数据文件</p>
+<blockquote>
+<p><strong>关于opener和handlers</strong></p>
+</blockquote>
+<p>1&gt;opener:当你获取一个URL的时候，你就使用一个opener(一个urllib2.OpenerDirector的实例) 默认的opener也就是我们常用的urlopen。它是一个特殊的opener，传入的参数仅仅是url,data,timeout(可以注意到并没有cookie，说明在某些网页中无法使用这种方法抓取数据），如果我们需要用到cookie，就需要创建更一般的opener来实现对Cookie的设置</p>
+<p>-<br><strong>自定义opener</strong></p>
+<pre><code>#使用build_opener()
+opener = urllib2.build_opener([handler1[handler2...]])
+</code></pre><p>参数handler是Handler实例，常用的有HTTPBasicAuthHandler、HTTPCookieProcessor、ProxyHandler等</p>
+<p>①<strong>修改http报头</strong></p>
+<pre><code>import urllib2
+opener = urllib2.build_opener()
+opener.addheaders = [(&apos;User-agent&apos;, &apos;Mozilla/5.0&apos;)]
+opener.open(url)
+</code></pre><p>②<strong>install_opener(opener)</strong><br>安装不同的opener对象作为urlopen()使用的全局opener</p>
+<pre><code>opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+urllib2.install_opener(opener)
+response3 = urllib2.urlopen(url)
+</code></pre><p>③<strong>密码验证（HTTPBasicAuthHandler</strong>）<br>HTTPBasicAuthHandler()处理程序可用add_password()来设置密码。</p>
+<pre><code>h.add_password(远程关联的名称,基URL,user,passwd)
+</code></pre><p>-</p>
+<pre><code>import urllib2
+auth=urllib2.HTTPBasicAuthHandler()
+auth.add_password(&apos;Administrator&apos;,&apos;http://www.example.com&apos;,&apos;Dave&apos;,&apos;123456&apos;)
+opener=urllib2.build_opener(auth)
+u=opener.open(URL)
+</code></pre><p>④<strong>Cookie处理(HTTPCookieProcessor)</strong></p>
+<pre><code>import urllib2,cookielib
+cookie=cookielib.CookieJar()
+cookiehand=urllib2.HTTPCookieProcessor(cookie)
+opener=urllib2.build_opener(cookiehand)
+</code></pre><p>⑤<strong>代理(ProxyHandler)-</strong><br>ProxyHandler(proxies)参数proxies是一个字典，将协议名称（http，ftp）等映射到相应代理服务器的URL。</p>
+<pre><code>proxy=ProxyHandler({&apos;http&apos;:&apos;http://someproxy.com:8080&apos;})
+auth=HTTPBasicAuthHandler()
+auth.add_password()
+opener=build_opener(auth,proxy)
+</code></pre><p>-</p>
+<hr>
+<p><strong>实例爬虫</strong></p>
+<blockquote>
+<p>1.确定抓取的目标：<br>-通过网页”检查元素”的操作可以确定该网页的url格式，数据格式和网页编码</p>
+<p>2.分析目标</p>
+<p>3.编写代码<br>在一个包中写入：总程序调度文件、URL管理器文件、HTML下载器文件、HTML解析器文件、HTML输出器文件</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/19/python数据处理/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Shirley">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/myslef.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="TobeFine">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="TobeFine" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/19/python数据处理/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-19T18:27:45+08:00">
+                2017-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/19/python数据处理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/19/python数据处理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h2 id="title-Python-数据采集"><a href="#title-Python-数据采集" class="headerlink" title="title:Python 数据采集"></a>title:Python 数据采集</h2><p>-</p>
+<p>环境：pycharm、python 2.7（自带urllib） install soupbeautiful</p>
+<p>-<br><strong>urllib的使用方法</strong></p>
+<pre><code>import urllib
+resp = urllib.urlopen(&quot;http://www.baidu.com&quot;)//网址
+print (resp.read().decode(&quot;utf-8&quot;))
+</code></pre><p>获取该网址的信息</p>
+<p>-使用post的方法获取信息</p>
+<p>在一个网页中，会有标示信号User-Agent来证明是一个网页而并不是爬虫<br>而要用post的方法获取信息，需要在Doc中（刷新F5，打开F12）获取一下信息：</p>
+<blockquote>
+<p>Status Code://响应结果</p>
+<p>User-Agent://使用的浏览器</p>
+<p>origin://来源</p>
+<p>Form data://from data下面就是请求的内容，要将请求的内容复制下来，并且放入post语句中</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/15/xss试验/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -797,7 +1136,7 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
