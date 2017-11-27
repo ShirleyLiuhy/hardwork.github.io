@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="TobeFine">
 <meta property="og:description" content="2017年11月18日的上海华东杯DCTF是我真正意义上的第一次线下赛，虽然在XMAN结营仪式上大佬也带着我打了一次线下赛，但是因为有大佬带着压力不是很大，而这一次自己单打独斗，所以做了很多的准备。 修改密码 1.修改后台密码：  后台地址：/admin 或者为admin.php 弱口令尝试：admin/admin  admin/12345 改成强密码（如果手速快的话）得知别人的ip地址之后，可以">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-27T06:02:44.892Z">
+<meta property="og:updated_time" content="2017-11-27T06:47:08.028Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第一次线下赛准备">
 <meta name="twitter:description" content="2017年11月18日的上海华东杯DCTF是我真正意义上的第一次线下赛，虽然在XMAN结营仪式上大佬也带着我打了一次线下赛，但是因为有大佬带着压力不是很大，而这一次自己单打独斗，所以做了很多的准备。 修改密码 1.修改后台密码：  后台地址：/admin 或者为admin.php 弱口令尝试：admin/admin  admin/12345 改成强密码（如果手速快的话）得知别人的ip地址之后，可以">
@@ -392,6 +392,7 @@
 <pre><code>passwd //修改SSH密码
 </code></pre><h2 id="挂waf"><a href="#挂waf" class="headerlink" title="挂waf"></a>挂waf</h2><p>如果是cms，直接在index.php 中<code>require_once（‘waf.php’）;</code><br><br>如果不是框架，在config.php中<code>requir_once(&#39;waf.php&#39;)；</code><br></p>
 <h2 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h2><p>备份服务器</p>
+<h2 id="扫地址、扫端口"><a href="#扫地址、扫端口" class="headerlink" title="扫地址、扫端口"></a>扫地址、扫端口</h2><p>&gt;<br><code>nmap -sn Ip地址段</code><br><br><code>nmap -sn Ip地址段</code><br></p>
 <p>##RIPS之后手动patch一些字符和字符串(flag,curl) ##<br><code>str_replace(&#39;flag&#39;,&#39;&#39;,&#39;$变量&#39;)；</code><br></p>
 <p><code>str_replace(&#39;curl&#39;,&#39;&#39;,&#39;$变量&#39;)；</code><br></p>
 <h2 id="Linux命令"><a href="#Linux命令" class="headerlink" title="Linux命令"></a>Linux命令</h2><pre><code>ssh &lt;-p 端口&gt; 用户名@IP　　
@@ -433,10 +434,25 @@ netstat -ant|awk  |grep |sed -e  -e |sort|uniq -c|sort -rn
 </blockquote>
 <p><code>打开网页F12，在Response Headers中的Server里面看</code><br></p>
 <h2 id="查看有没有后门"><a href="#查看有没有后门" class="headerlink" title="查看有没有后门"></a>查看有没有后门</h2><p><br><br>用D盾或者其他工具扫一下看看服务器有没有预留的后门，可以删除和利用</p>
+<p>也可以利用一些语句：</p>
+<blockquote>
+<p>find . -name ‘<em>.php’ | xargs grep -n ‘eval(‘<br><br>find . -name ‘</em>.php’ | xargs grep -n ‘assert(‘<br><br>find . -name ‘*.php’ | xargs grep -n ‘system(‘<br></p>
+</blockquote>
 <h2 id="找漏洞"><a href="#找漏洞" class="headerlink" title="找漏洞"></a>找漏洞</h2><p>[这个..emmm]</p>
 <h2 id="查看流量"><a href="#查看流量" class="headerlink" title="查看流量"></a>查看流量</h2><h2 id="Compare"><a href="#Compare" class="headerlink" title="Compare"></a>Compare</h2><blockquote>
 <p>每隔几轮做一次服务器对比</p>
 <p>如果是cms，可以那最新的cms和比赛用的cms做对比</p>
+</blockquote>
+<h2 id="注意web目录的权限"><a href="#注意web目录的权限" class="headerlink" title="注意web目录的权限"></a>注意web目录的权限</h2><blockquote>
+<p>如果权限是777说明其他用户和属组成员和文件的属组都可以有rwx的权限<br><br>处于安全的考虑，应该将777修改为755[其他用户和属组成员没有写权限]<br></p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>查看文件夹权限<br><br><code>ls -la （该目录下所有文件和文件夹的权限）</code><br></p>
+</blockquote>
+<p><br></p>
+<blockquote>
+<p>改变文件夹的权限<br><br><code>chmod 755 文件夹名</code><br><br><code>find . -type d -writable | xargs chmod 755</code><br></p>
 </blockquote>
 
       
@@ -605,7 +621,7 @@ netstat -ant|awk  |grep |sed -e  -e |sort|uniq -c|sort -rn
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改密码"><span class="nav-number">1.</span> <span class="nav-text">修改密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂waf"><span class="nav-number">2.</span> <span class="nav-text">挂waf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份"><span class="nav-number">3.</span> <span class="nav-text">备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux命令"><span class="nav-number">4.</span> <span class="nav-text">Linux命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看有没有后门"><span class="nav-number">5.</span> <span class="nav-text">查看有没有后门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找漏洞"><span class="nav-number">6.</span> <span class="nav-text">找漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看流量"><span class="nav-number">7.</span> <span class="nav-text">查看流量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compare"><span class="nav-number">8.</span> <span class="nav-text">Compare</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改密码"><span class="nav-number">1.</span> <span class="nav-text">修改密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂waf"><span class="nav-number">2.</span> <span class="nav-text">挂waf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份"><span class="nav-number">3.</span> <span class="nav-text">备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扫地址、扫端口"><span class="nav-number">4.</span> <span class="nav-text">扫地址、扫端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux命令"><span class="nav-number">5.</span> <span class="nav-text">Linux命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看有没有后门"><span class="nav-number">6.</span> <span class="nav-text">查看有没有后门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找漏洞"><span class="nav-number">7.</span> <span class="nav-text">找漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看流量"><span class="nav-number">8.</span> <span class="nav-text">查看流量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compare"><span class="nav-number">9.</span> <span class="nav-text">Compare</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意web目录的权限"><span class="nav-number">10.</span> <span class="nav-text">注意web目录的权限</span></a></li></ol></div>
             
 
           </div>
